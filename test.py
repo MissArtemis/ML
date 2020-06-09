@@ -44,9 +44,11 @@
 # # transform examines the input items against all the association rules and summarize the
 # # consequents as prediction
 # model.transform(df).show()
-import numpy as np
-a = [[1,2,3],[4,5,6]]
-ah = np.mat(a)
-print(ah[1])
-print(ah[0][0])
-print(ah[0])
+# import numpy as np
+# a = [[1,2,3],[4,5,6]]
+# ah = np.mat(a)
+# print(ah[1])
+# print(ah[0][0])
+# print(ah[0])
+sigma = 0.1
+print(sigma**2)
