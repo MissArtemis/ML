@@ -1,2 +1,2 @@
 # ML-master
- Learn to be a m,aster of Machine Learning
+ Learn to be a master of Machine Learning
