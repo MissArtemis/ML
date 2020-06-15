@@ -49,6 +49,18 @@
 # ah = np.mat(a)
 # print(ah[1])
 # print(ah[0][0])
-# print(ah[0])
-sigma = 0.1
-print(sigma**2)
+# # print(ah[0])
+# sigma = 0.1
+# print(sigma**2)
+
+
+
+import numpy as np
+a = [[1,2],[3,4]]
+b= [[3,4],[1,2]]
+a = np.mat(a)
+b= np.mat(b)
+
+a = a.tolist()
+b= b.tolist()
+print(set(a))
