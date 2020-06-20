@@ -46,8 +46,7 @@ def pred(data,p,q):
         for j in range(n):
             if data[i,j]==0:
                 data[i,j] = p[i,:]*q[:,j]
-                if data[i,j]<0:
-                    data[i,j]=0
+
     return data
 
 
