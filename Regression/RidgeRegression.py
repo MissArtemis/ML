@@ -30,7 +30,7 @@ def load_data(input):
 
 if __name__ == "__main__":
     print("\t----------------1.load data---------------")
-    feature,label = load_data("D:/pyproj/ML-master/data/data_linear.txt")
+    feature,label = load_data("D:/pyproj/ML-master/data/meterial.txt")
     print("feature:",feature)
     print("label:",label)
     print("\t---------------2.training-----------------")

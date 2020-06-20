@@ -48,7 +48,7 @@ def load_data(file_name):
 
 if __name__ =="__main__":
     print("\t-----------------1.load data --------------")
-    feature,label = load_data("D:/pyproj/ML-master/data/data_linear.txt")
+    feature,label = load_data("D:/pyproj/ML-master/data/SoftInput.txt")
     print("feature:",feature)
     print("label:",label)
     print("\t-----------------2.Training----------------")
