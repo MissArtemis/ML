@@ -104,11 +104,16 @@ class AprioriSeq():
 
             if k >= self.minLength:
                 base = set(cand_select)
-                # print(base)
                 ItemSet.update(base)
                 print(ItemSet)
             k += 1
+
+        self.result = ItemSet
         return ItemSet
+
+
+
+
 
 
 
@@ -117,13 +122,19 @@ class AprioriSeq():
 if __name__ == "__main__":
     
     spark = SparkSession.builder.appName("SeqMining").getOrCreate()
-    data = spark.read.csv("file:///Users/zhangjinghang/Desktop/Lab/SeqenceMining/path.csv",sep="\t")
+    data = spark.read.csv("D:/pyproj/ML-master/SequenceMining/SeqMining/path.csv",sep="\t")
     # data.show()
     columns=["hashedIpAddress","timestamp","durationInSec","path","rating"]
     data=data.toDF(*columns)
     # data.show()
     data = data.withColumn("path",split(data['path'],";"))
     # data.show()
+    data = data.withColumn("path",explode(data['path']))
+    # data.show()
+    data = data.where(data['path']!="<")
+    data = data.groupBy(data['hashedIpAddress']).agg(collect_list(data['path']))
+    data = data.withColumnRenamed("collect_list(path)","path")
+    data.show()
     model = AprioriSeq(data,"path",minSupport=0.001)
     pattern = model.fit()
     # pattern.show(20,False)
