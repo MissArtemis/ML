@@ -55,12 +55,28 @@
 
 
 
-import numpy as np
-a = [[1,2],[3,4]]
-b= [[3,4],[1,2]]
-a = np.mat(a)
-b= np.mat(b)
+# import numpy as np
+# a = [[1,2],[3,4]]
+# b= [[3,4],[1,2]]
+# a = np.mat(a)
+# b= np.mat(b)
+#
+# a = a.tolist()
+# b= b.tolist()
+# print(set(a))
 
-a = a.tolist()
-b= b.tolist()
-print(set(a))
+ll = [['a'],['b'],['c']]
+
+def combo(list):
+    cob = []
+    for i in range(len(list)):
+        for j in range(len(list)):
+            cob.append([list[i],list[j]])
+    return cob
+
+rs = combo(ll)
+print("result:",rs)
+
+
+for r in rs:
+    print(r)

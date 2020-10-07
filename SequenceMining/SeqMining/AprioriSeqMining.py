@@ -11,6 +11,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
 from pyspark.sql import DataFrame
+import copy
 
 
 
@@ -25,7 +26,7 @@ class AprioriSeq():
         self.minSupport = minSupport
         self.maxLength = maxLength
         self.minLength = minLength
-    
+
     def getTotalNum(self):
         col = self.col
         data = self.data
@@ -61,7 +62,9 @@ class AprioriSeq():
             else:
                 return "True"
     
-    def generateCand(self,seq1:list,seq2:list):
+    def generateCand(self,seq11:list,seq22:list):
+        seq1 = copy.deepcopy(seq11)
+        seq2 = copy.deepcopy(seq22)
         if len(seq1)!=len(seq2):
             # print("The candidate is not from the same dim")
             return []
@@ -71,10 +74,20 @@ class AprioriSeq():
             if body1 == body2:
                 # print("Yes")
                 seq1.append(seq2[-1])
+
                 return seq1
             else:
                 print("Not from same body")
                 return []
+
+    def combo(self,list):
+        cob = []
+        for i in range(len(list)):
+            for j in range(len(list)):
+                cob.append([list[i],list[j]])
+        return cob
+
+
 
     def fit(self):
         k=1
@@ -84,39 +97,67 @@ class AprioriSeq():
         ItemSet = set()
         # return ItemSet
         base = countdtbase.select("items").rdd.map(lambda x: x[0]).collect()
-        while k<=self.maxLength:
-            cand_all = list(itertools.combinations(base,2))
+        dataPanda = data.toPandas()
+        while k<self.maxLength:
+            cand_all = self.combo(base)
+            print(cand_all)
+
             cand_select = []
+            cand = []
             for cd in cand_all:
-             # print(cd[0],cd[1])
+                print(cd[0],cd[1])
                 newCand = self.generateCand(cd[0],cd[1])
                 # print(newCand)
                 if newCand == []:
                     continue
                 # print(newCand)
-                dataPanda = data.toPandas()
                 dataPanda['result'] = dataPanda[self.col].apply(lambda x:self.isSubsequence(newCand,x))
                 count = (dataPanda['result']=='True').sum()
                 print(newCand,":",count)
                 if count >= self.threshold:
                     cand_select.append(str(newCand))
-                    print(cand_select)
+                    if newCand not in cand:
+                        cand.append(newCand)
+                    # print(cand_select)
 
             if k >= self.minLength:
                 base = set(cand_select)
                 ItemSet.update(base)
-                print(ItemSet)
+                # print(ItemSet)
+                base = cand
+                # print(base)
             k += 1
 
         self.result = ItemSet
+
         return ItemSet
 
 
 
-
-
-
-
+    def checkNoise(self):
+        countdtbase = self.getItemsSet()
+        data = self.data.select(self.col)
+        base = countdtbase.select("items").rdd.map(lambda x: x[0]).collect()
+        # print(base)
+        one_all = self.combo(base)
+        print(one_all)
+        dataPanda = data.toPandas()
+        noise = []
+        selected = []
+        for one in one_all:
+            two_all = self.generateCand(one[0],one[1])
+            print(one)
+            dataPanda['result'] = dataPanda[self.col].apply(lambda x: self.isSubsequence(two_all, x))
+            count = (dataPanda['result'] == 'True').sum()
+            if count >= self.threshold:
+                if one[0]==one[1]:
+                    noise.append(two_all)
+                elif [one[1],one[0]] in selected:
+                    noise.append(two_all)
+                else:
+                    selected.append(two_all)
+        self.noise = noise
+        return noise
 
 
 if __name__ == "__main__":
@@ -135,7 +176,9 @@ if __name__ == "__main__":
     data = data.groupBy(data['hashedIpAddress']).agg(collect_list(data['path']))
     data = data.withColumnRenamed("collect_list(path)","path")
     data.show()
-    model = AprioriSeq(data,"path",minSupport=0.001)
+    model = AprioriSeq(data,"path",minSupport=0.01,maxLength=3)
+    # noise = model.checkNoise()
+    # print(noise)
     pattern = model.fit()
     # pattern.show(20,False)
     print(pattern)
