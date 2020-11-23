@@ -4,7 +4,7 @@
     <content url="file://$MODULE_DIR$" />
     <content url="jar://$USER_HOME$/App/spark-3.0.0-preview2-bin-hadoop2.7/python/lib/py4j-0.10.8.1-src.zip!/" />
     <content url="jar://$USER_HOME$/App/spark-3.0.0-preview2-bin-hadoop2.7/python/lib/pyspark.zip!/" />
-    <orderEntry type="jdk" jdkName="Python 3.8 (ML)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.8 (ZLab)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
